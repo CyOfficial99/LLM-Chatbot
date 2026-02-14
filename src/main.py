@@ -1,4 +1,3 @@
-from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import List
 
@@ -10,7 +9,23 @@ import faiss
 import numpy as np
 import json
 import os
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
+app = FastAPI()
+
+origins = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 # -------------------
 # Config
 # -------------------
@@ -111,6 +126,9 @@ def ingest():
     ingest_pdf()
     return {"status": "PDF ingested and index built"}
 
+@app.get("/test")
+def test():
+    return {"status": "hello world"}
 
 @app.post("/search", response_model=List[SearchResponse])
 def search(request: SearchRequest):
