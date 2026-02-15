@@ -128,6 +128,7 @@ def ingest():
 
 @app.get("/test")
 def test():
+    print("API called")
     return {"status": "hello world"}
 
 @app.post("/search", response_model=List[SearchResponse])

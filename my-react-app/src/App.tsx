@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import './App.css';
+import { callTest } from "./api";
 
 function App() {
   const [messages, setMessages] = useState([
@@ -7,6 +8,7 @@ function App() {
   ]);
   const [input, setInput] = useState('');
   const [selectedModel, setSelectedModel] = useState("gpt-4");
+  const [message, setMessage] = useState("");
   
   const sendMessage = () => {
     if (input.trim() === '') return;
@@ -30,8 +32,13 @@ function App() {
       sendMessage();
     }
   };
-  const handlePlusClick = () => {
-    console.log("clicked");
+  const handlePlusClick = async () => {
+    try {
+      const result = await callTest();
+      setMessage(result.message);
+    } catch (error) {
+      setMessage("Failed to call /test");
+    }
   };
 
   return (
