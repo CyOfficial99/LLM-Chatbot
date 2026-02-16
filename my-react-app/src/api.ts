@@ -12,3 +12,16 @@ export const callTest = async (): Promise<TestResponse> => {
   const data: TestResponse = await response.json();
   return data;
 };
+
+interface ModelResponse {
+  models: { model: string }[];
+}
+
+export const fetchModelList = async (): Promise<ModelResponse> => {
+  const response = await fetch(`${API_BASE_URL}/model`);
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+  const modelList: ModelResponse = await response.json();
+  return modelList;
+};

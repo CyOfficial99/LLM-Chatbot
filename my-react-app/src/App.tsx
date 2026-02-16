@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect  } from 'react';
 import './App.css';
-import { callTest } from "./api";
+import { callTest, fetchModelList } from "./api";
 
 function App() {
   const [messages, setMessages] = useState([
@@ -9,6 +9,7 @@ function App() {
   const [input, setInput] = useState('');
   const [selectedModel, setSelectedModel] = useState("gpt-4");
   const [message, setMessage] = useState("");
+  const [models, setModels] = useState<string[]>([]);
   
   const sendMessage = () => {
     if (input.trim() === '') return;
@@ -41,17 +42,49 @@ function App() {
     }
   };
 
+
+  useEffect(() => {
+  const loadModels = async () => {
+    try {
+      const data = await fetchModelList();
+      
+      const modelNames = data.models.map((m: any) => m.model);
+
+      setModels(modelNames);
+
+      // Set default selected model if available
+      if (modelNames.length > 0) {
+        setSelectedModel(modelNames[0]);
+      }
+
+    } catch (error) {
+      console.error("Failed to fetch models:", error);
+    }
+  };
+
+  loadModels();
+}, []);
+
+
   return (
     <div className="chat-container">
 
       {/* Top Header */}
       <div className="chat-header">
         <div className="model-selector">
-          <select value={selectedModel} onChange={(e) => setSelectedModel(e.target.value)}>
-            <option value="gpt-4">GPT-4</option>
-            <option value="gpt-3.5">GPT-3.5</option>
-            <option value="claude">Claude</option>
-            <option value="gemini">Gemini</option>
+          <select
+            value={selectedModel}
+            onChange={(e) => setSelectedModel(e.target.value)}
+          >
+            {models.length === 0 ? (
+              <option disabled>Loading models...</option>
+            ) : (
+              models.map((modelName, index) => (
+                <option key={index} value={modelName}>
+                  {modelName}
+                </option>
+              ))
+            )}
           </select>
         </div>
 

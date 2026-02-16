@@ -11,12 +11,14 @@ import json
 import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from config.ollama import check_ollama_model
 
 app = FastAPI()
 
 origins = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
 ]
 
 app.add_middleware(
@@ -156,3 +158,9 @@ def search(request: SearchRequest):
         })
 
     return results
+
+@app.get("/model")
+def get_model():
+    model = check_ollama_model()
+    print("Model is ", model)
+    return JSONResponse(content={"model": [model]})
