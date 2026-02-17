@@ -9,7 +9,7 @@ function App() {
   const [input, setInput] = useState('');
   const [selectedModel, setSelectedModel] = useState("gpt-4");
   const [message, setMessage] = useState("");
-  const [models, setModels] = useState<string[]>([]);
+  const [models, setModels] = useState<{ model: string }[]>([]);
   
   const sendMessage = () => {
     if (input.trim() === '') return;
@@ -48,15 +48,14 @@ function App() {
     try {
       const data = await fetchModelList();
       
-      const modelNames = data.models.map((m: any) => m.model);
+      // data.model is already ["qwen3-coder"]
+      const modelNames = data.model; 
 
       setModels(modelNames);
 
-      // Set default selected model if available
-      if (modelNames.length > 0) {
+      if (modelNames && modelNames.length > 0) {
         setSelectedModel(modelNames[0]);
       }
-
     } catch (error) {
       console.error("Failed to fetch models:", error);
     }

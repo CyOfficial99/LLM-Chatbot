@@ -14,7 +14,7 @@ export const callTest = async (): Promise<TestResponse> => {
 };
 
 interface ModelResponse {
-  models: { model: string }[];
+  model: { model: string }[];
 }
 
 export const fetchModelList = async (): Promise<ModelResponse> => {
